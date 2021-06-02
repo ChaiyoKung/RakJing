@@ -8,7 +8,7 @@ import theme from "./global/theme";
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
-  const [isLogined, setIsLogined] = useState(false);
+  const [isLogined, setIsLogined] = useState(true);
 
   useEffect(() => {
     // Check user logined?

@@ -23,6 +23,13 @@ export default function CustomAppbar({ scene, navigation, previous }) {
         title={title}
         titleStyle={{ color: theme.colors.primary }}
       />
+      {scene.route.name === "ChatScreen" && (
+        <Appbar.Action
+          icon="account-circle"
+          color={theme.colors.primary}
+          onPress={() => navigation.navigate("ProfileScreen")}
+        />
+      )}
     </Appbar.Header>
   );
 }
