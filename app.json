@@ -27,6 +27,17 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "firebaseConfig": {
+        "apiKey": "AIzaSyAJC-QEfYl3n3XuuL6JMHx7LF5HOMLZ-3Y",
+        "authDomain": "rakjing-29134.firebaseapp.com",
+        "databaseURL": "https://rakjing-29134-default-rtdb.asia-southeast1.firebasedatabase.app",
+        "projectId": "rakjing-29134",
+        "storageBucket": "rakjing-29134.appspot.com",
+        "messagingSenderId": "516815598429",
+        "appId": "1:516815598429:web:90af89ce40bc82708a6eb4"
+      }
     }
   }
 }

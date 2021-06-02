@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View } from "react-native";
-import { Button, Headline, TextInput } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { Button, Headline, TextInput, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Container from "../components/Container";
 import theme from "../global/theme";
@@ -24,7 +24,7 @@ export default class LoginScreen extends Component {
       <Container bg={theme.colors.surface}>
         <SafeAreaView>
           <View style={styles.headerWrapper}>
-            <Headline style={styles.headline}>รักจริง</Headline>
+            <Text style={styles.headline}>รักจริง</Text>
           </View>
           <View style={styles.inputWrapper}>
             <TextInput
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   headline: {
     fontWeight: "bold",
     color: theme.colors.primary,
+    fontSize: 14 * 3,
   },
   inputWrapper: {
     paddingHorizontal: 14,
