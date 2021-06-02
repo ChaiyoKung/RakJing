@@ -19,9 +19,9 @@ export default function App() {
   const [isLogined, setIsLogined] = useState(false);
 
   useEffect(() => {
-    // Check user logined?
-    firebase.auth().onAuthStateChanged((user) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        if (!user.displayName || !user.photoURL) return;
         setIsLogined(true);
       } else {
         setIsLogined(false);
@@ -30,7 +30,9 @@ export default function App() {
       setIsReady(true);
     });
 
-    return () => {};
+    return () => {
+      unsubscribe;
+    };
   }, []);
 
   if (!isReady) {

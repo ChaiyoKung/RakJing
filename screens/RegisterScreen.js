@@ -56,10 +56,15 @@ export default class RegisterScreen extends Component {
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        user.updateProfile({
-          displayName: this.state.nickname,
-          photoURL: this.state.icon,
-        });
+        user
+          .updateProfile({
+            displayName: this.state.nickname,
+            photoURL: this.state.icon,
+          })
+          .then(() => {
+            firebase.auth().signOut();
+            this.props.navigation.goBack();
+          });
       })
       .catch((error) => {
         const errorCode = error.code;
