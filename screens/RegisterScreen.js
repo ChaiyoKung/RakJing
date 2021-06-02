@@ -1,9 +1,13 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, Alert } from "react-native";
 import { Avatar, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Container from "../components/Container";
+import { randomItemFromArray } from "../global/functions";
+import iconsName from "../global/iconsName";
 import theme from "../global/theme";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default class RegisterScreen extends Component {
   state = {
@@ -12,19 +16,58 @@ export default class RegisterScreen extends Component {
     password: "",
     confPass: "",
     nickname: "",
-    icon: "home",
+    icon: "",
   };
 
+  componentDidMount() {
+    this.setState({ icon: randomItemFromArray(iconsName) });
+  }
+
+  stepControl(control) {
+    switch (control) {
+      case "next":
+        this.setState((prevState) => ({ step: prevState.step + 1 }));
+        break;
+      case "back":
+        this.setState((prevState) => ({ step: prevState.step - 1 }));
+        break;
+      default:
+        break;
+    }
+  }
+
   _pressNext = () => {
-    this.setState((prevState) => ({ step: prevState.step + 1 }));
+    if (!this.state.email) return;
+    if (!this.state.password || this.state.password.length < 6) return;
+    if (this.state.password !== this.state.confPass) return;
+
+    this.stepControl("next");
   };
 
   _pressBack = () => {
-    this.setState((prevState) => ({ step: prevState.step - 1 }));
+    this.stepControl("back");
   };
 
   _pressRegister = () => {
     // Register
+    if (!this.state.nickname) return;
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        user.updateProfile({
+          displayName: this.state.nickname,
+          photoURL: this.state.icon,
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        Alert.alert(errorCode, errorMessage);
+      });
   };
 
   render() {
@@ -90,7 +133,11 @@ export default class RegisterScreen extends Component {
                   <Button mode="outlined" onPress={this._pressBack}>
                     ย้อนกลับ
                   </Button>
-                  <Button mode="contained" onPress={this._pressRegister}>
+                  <Button
+                    mode="contained"
+                    icon="account-plus"
+                    onPress={this._pressRegister}
+                  >
                     สมัครสมาชิก
                   </Button>
                 </View>
