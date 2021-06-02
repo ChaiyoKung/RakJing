@@ -49,7 +49,6 @@ export default class RegisterScreen extends Component {
   };
 
   _pressRegister = () => {
-    // Register
     if (!this.state.nickname) return;
 
     firebase

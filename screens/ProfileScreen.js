@@ -23,7 +23,6 @@ export default class ProfileScreen extends Component {
   }
 
   _pressLogout = () => {
-    // Logout
     firebase.auth().signOut();
   };
 

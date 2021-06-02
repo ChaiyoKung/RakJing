@@ -3,6 +3,7 @@ import { Dimensions, View, ViewPropTypes } from "react-native";
 import PropTypes from "prop-types";
 import { Avatar, Caption, Card, Paragraph, Text } from "react-native-paper";
 import theme from "../global/theme";
+import moment from "moment";
 
 export default function MessageChip(props) {
   const name = props.name;
@@ -25,7 +26,7 @@ export default function MessageChip(props) {
       <Caption>
         {!me && <Caption style={{ fontWeight: "bold" }}>{name}</Caption>}
         {!me && " • "}
-        {timestamp}
+        {moment(timestamp).fromNow()}
       </Caption>
       <View
         style={{

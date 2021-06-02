@@ -14,7 +14,6 @@ export default class LoginScreen extends Component {
   };
 
   _pressLogin = () => {
-    // Login
     if (!this.state.email) return;
     if (!this.state.password) return;
 
@@ -65,11 +64,7 @@ export default class LoginScreen extends Component {
             >
               เข้าสู่ระบบ
             </Button>
-            <Button
-              mode="contained"
-              onPress={this._pressRegister}
-              color={theme.colors.accent}
-            >
+            <Button mode="outlined" onPress={this._pressRegister}>
               สมัครสมาชิก
             </Button>
           </View>

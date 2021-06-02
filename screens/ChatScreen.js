@@ -4,84 +4,72 @@ import { Button, Divider, IconButton, TextInput } from "react-native-paper";
 import Container from "../components/Container";
 import MessageChip from "../components/MessageChip";
 import theme from "../global/theme";
+import firebase from "firebase/app";
+import "firebase/database";
 
 export default class ChatScreen extends Component {
   state = {
     messages: [
-      {
-        type: "text",
-        content:
-          "Hi! I'm name is Chaiyo. 5555555555555555555555555555555555555555555",
-        timestamp: 123456986544,
-        by: { uid: "asdfghjkl", name: "นายมะม่วง", profileIcon: "pencil" },
-      },
-      {
-        type: "text",
-        content: "How are you.",
-        timestamp: 123456986544,
-        by: { uid: "asdfghjkl", name: "นายมะม่วง", profileIcon: "pencil" },
-      },
-      {
-        type: "text",
-        content: "I'm find. Thankyou. and you?",
-        timestamp: 123456986544,
-        by: { uid: "a123456", name: "มะละกอ", profileIcon: "book" },
-      },
-      {
-        type: "text",
-        content: "Sorry na",
-        timestamp: 123456986544,
-        by: { uid: "a123456", name: "มะละกอ", profileIcon: "book" },
-      },
-      {
-        type: "text",
-        content: "How are you.",
-        timestamp: 123456986544,
-        by: { uid: "asdfghjkl", name: "นายมะม่วง", profileIcon: "pencil" },
-      },
-      {
-        type: "text",
-        content: "I'm find. Thankyou. and you?",
-        timestamp: 123456986544,
-        by: { uid: "a123456", name: "มะละกอ", profileIcon: "book" },
-      },
-      {
-        type: "text",
-        content: "Sorry na",
-        timestamp: 123456986544,
-        by: { uid: "a123456", name: "มะละกอ", profileIcon: "book" },
-      },
-      {
-        type: "text",
-        content: "Sorry na",
-        timestamp: 123456986544,
-        by: { uid: "a123456", name: "มะละกอ", profileIcon: "book" },
-      },
-      {
-        type: "text",
-        content: "How are you.",
-        timestamp: 123456986544,
-        by: { uid: "asdfghjkl", name: "นายมะม่วง", profileIcon: "pencil" },
-      },
-      {
-        type: "text",
-        content: "I'm find. Thankyou. and you?",
-        timestamp: 123456986544,
-        by: { uid: "a123456", name: "มะละกอ", profileIcon: "book" },
-      },
-      {
-        type: "text",
-        content: "Sorry na",
-        timestamp: 123456986544,
-        by: { uid: "a123456", name: "มะละกอ", profileIcon: "book" },
-      },
+      // {
+      //   type: "text",
+      //   content:
+      //     "Hi! I'm name is Chaiyo. 5555555555555555555555555555555555555555555",
+      //   timestamp: 123456986544,
+      //   by: { uid: "asdfghjkl", name: "นายมะม่วง", profileIcon: "pencil" },
+      // },
     ],
-    uid: "a123456",
+    uid: "",
+    uname: "",
+    uicon: "",
     message: "",
   };
 
+  componentDidMount() {
+    this.loadUserProfile();
+    this.loadMessages();
+  }
+
+  loadUserProfile() {
+    const { uid, displayName, photoURL } = firebase.auth().currentUser;
+    this.setState({ uid, uname: displayName, uicon: photoURL });
+  }
+
+  loadMessages() {
+    firebase
+      .database()
+      .ref("messages")
+      .on("value", (snapshot) => {
+        const values = snapshot.val();
+        const messages = [];
+        for (const key in values) {
+          if (Object.hasOwnProperty.call(values, key)) {
+            const value = values[key];
+            messages.push(value);
+          }
+        }
+        this.setState({ messages });
+      });
+  }
+
   _pressSend = () => {
-    // Send Message
+    if (!this.state.message) return;
+
+    firebase
+      .database()
+      .ref("messages")
+      .push({
+        type: "text",
+        content: this.state.message,
+        timestamp: Date.now(),
+        by: {
+          uid: this.state.uid,
+          name: this.state.uname,
+          profileIcon: this.state.uicon,
+        },
+      })
+      .then(() => {
+        this.setState({ message: "" });
+      });
   };
 
   render() {
