@@ -18,7 +18,11 @@ export default function MainStack() {
         component={ChatScreen}
         options={{ headerTitle: "ห้องแห่งความลับ 666" }}
       />
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+      <Stack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{ headerTitle: "โปรไฟล์" }}
+      />
     </Stack.Navigator>
   );
 }
