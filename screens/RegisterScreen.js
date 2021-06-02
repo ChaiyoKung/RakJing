@@ -17,6 +17,7 @@ export default class RegisterScreen extends Component {
     confPass: "",
     nickname: "",
     icon: "",
+    btnRegisterIsLoading: false,
   };
 
   componentDidMount() {
@@ -37,9 +38,20 @@ export default class RegisterScreen extends Component {
   }
 
   _pressNext = () => {
-    if (!this.state.email) return;
-    if (!this.state.password || this.state.password.length < 6) return;
-    if (this.state.password !== this.state.confPass) return;
+    if (!this.state.email) {
+      this.inputEmailRef.focus();
+      return;
+    }
+
+    if (!this.state.password || this.state.password.length < 6) {
+      this.inputPasswordRef.focus();
+      return;
+    }
+
+    if (this.state.password !== this.state.confPass) {
+      this.inputConfPassRef.focus();
+      return;
+    }
 
     this.stepControl("next");
   };
@@ -49,7 +61,12 @@ export default class RegisterScreen extends Component {
   };
 
   _pressRegister = () => {
-    if (!this.state.nickname) return;
+    if (!this.state.nickname) {
+      this.inputNicknameRef.focus();
+      return;
+    }
+
+    this.setState({ btnRegisterIsLoading: true });
 
     firebase
       .auth()
@@ -64,13 +81,19 @@ export default class RegisterScreen extends Component {
           .then(() => {
             firebase.auth().signOut();
             this.props.navigation.goBack();
+          })
+          .catch((error) => {
+            Alert.alert(error.code, error.message);
+          })
+          .finally(() => {
+            this.setState({ btnRegisterIsLoading: false });
           });
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-
-        Alert.alert(errorCode, errorMessage);
+        Alert.alert(error.code, error.message);
+      })
+      .finally(() => {
+        this.setState({ btnRegisterIsLoading: false });
       });
   };
 
@@ -82,27 +105,38 @@ export default class RegisterScreen extends Component {
             <View>
               <View style={styles.inputWrapper}>
                 <TextInput
+                  ref={(ref) => (this.inputEmailRef = ref)}
                   mode="outlined"
                   label="อีเมล"
                   value={this.state.email}
                   onChangeText={(email) => this.setState({ email })}
                   keyboardType="email-address"
+                  returnKeyType="next"
                   style={{ marginBottom: 7 }}
+                  onSubmitEditing={() => this.inputPasswordRef.focus()}
                 />
                 <TextInput
+                  ref={(ref) => (this.inputPasswordRef = ref)}
                   mode="outlined"
                   label="รหัสผ่าน"
+                  placeholder="รหัสผ่านจะต้องมีความยาวตั้งแต่ 6 ตัวอักษรขึ้นไป"
                   value={this.state.password}
                   onChangeText={(password) => this.setState({ password })}
                   secureTextEntry
+                  returnKeyType="next"
                   style={{ marginBottom: 7 }}
+                  onSubmitEditing={() => this.inputConfPassRef.focus()}
                 />
                 <TextInput
+                  ref={(ref) => (this.inputConfPassRef = ref)}
                   mode="outlined"
                   label="ยืนยันรหัสผ่าน"
+                  placeholder="ใส่รหัสผ่านอีกครั้งเพื่อยืนยัน"
                   value={this.state.confPass}
                   onChangeText={(confPass) => this.setState({ confPass })}
                   secureTextEntry
+                  returnKeyType="next"
+                  onSubmitEditing={this._pressNext}
                 />
               </View>
               <View style={[styles.buttonWrapper, { alignItems: "flex-end" }]}>
@@ -121,11 +155,13 @@ export default class RegisterScreen extends Component {
                     style={{ marginBottom: 7, alignSelf: "center" }}
                   />
                   <TextInput
+                    ref={(ref) => (this.inputNicknameRef = ref)}
                     mode="outlined"
                     label="ชื่อเล่น"
                     placeholder="ใส่ชื่อที่คิดว่าจะไม่มีใครรู้ว่าคือคุณ"
                     value={this.state.nickname}
                     onChangeText={(nickname) => this.setState({ nickname })}
+                    onSubmitEditing={this._pressRegister}
                   />
                 </View>
                 <View
@@ -141,6 +177,7 @@ export default class RegisterScreen extends Component {
                     mode="contained"
                     icon="account-plus"
                     onPress={this._pressRegister}
+                    loading={this.state.btnRegisterIsLoading}
                   >
                     สมัครสมาชิก
                   </Button>

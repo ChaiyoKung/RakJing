@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, ScrollView } from "react-native";
+import { Text, StyleSheet, View, ScrollView, Alert } from "react-native";
 import { Button, Divider, IconButton, TextInput } from "react-native-paper";
 import Container from "../components/Container";
 import MessageChip from "../components/MessageChip";
@@ -27,6 +27,10 @@ export default class ChatScreen extends Component {
   componentDidMount() {
     this.loadUserProfile();
     this.loadMessages();
+  }
+
+  componentWillUnmount() {
+    firebase.database().ref("messages").off("value");
   }
 
   loadUserProfile() {
@@ -69,13 +73,20 @@ export default class ChatScreen extends Component {
       })
       .then(() => {
         this.setState({ message: "" });
+      })
+      .catch((error) => {
+        Alert.alert(error.code, error.message);
       });
   };
 
   render() {
     return (
       <Container>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView
+          ref={(ref) => (this.scrollViewRef = ref)}
+          onContentSizeChange={() => this.scrollViewRef.scrollToEnd()}
+          style={styles.scrollView}
+        >
           {this.state.messages.map((message, index) => {
             if (message.type === "text") {
               return (

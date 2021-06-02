@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { Avatar, Button, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Container from "../components/Container";
@@ -11,6 +11,7 @@ export default class ProfileScreen extends Component {
   state = {
     name: "",
     icon: "",
+    btnLogoutIsLoading: false,
   };
 
   componentDidMount() {
@@ -23,7 +24,17 @@ export default class ProfileScreen extends Component {
   }
 
   _pressLogout = () => {
-    firebase.auth().signOut();
+    this.setState({ btnLogoutIsLoading: true });
+
+    firebase
+      .auth()
+      .signOut()
+      .catch((error) => {
+        Alert.alert(error.code, error.message);
+      })
+      .finally(() => {
+        this.setState({ btnLogoutIsLoading: false });
+      });
   };
 
   render() {
@@ -35,7 +46,11 @@ export default class ProfileScreen extends Component {
             <Text style={styles.name}>{this.state.name}</Text>
           </View>
           <View style={styles.buttonWrapper}>
-            <Button mode="outlined" onPress={this._pressLogout}>
+            <Button
+              mode="outlined"
+              onPress={this._pressLogout}
+              loading={this.state.btnLogoutIsLoading}
+            >
               ออกจากระบบ
             </Button>
           </View>

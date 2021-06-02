@@ -11,19 +11,30 @@ export default class LoginScreen extends Component {
   state = {
     email: "",
     password: "",
+    btnLoginIsLoading: false,
   };
 
   _pressLogin = () => {
-    if (!this.state.email) return;
-    if (!this.state.password) return;
+    if (!this.state.email) {
+      this.inputEmailRef.focus();
+      return;
+    }
+
+    if (!this.state.password) {
+      this.inputPasswordRef.focus();
+      return;
+    }
+
+    this.setState({ btnLoginIsLoading: true });
 
     firebase
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        Alert.alert(errorCode, errorMessage);
+        Alert.alert(error.code, error.message);
+      })
+      .finally(() => {
+        this.setState({ btnLoginIsLoading: false });
       });
   };
 
@@ -40,19 +51,24 @@ export default class LoginScreen extends Component {
           </View>
           <View style={styles.inputWrapper}>
             <TextInput
+              ref={(ref) => (this.inputEmailRef = ref)}
               mode="outlined"
               label="อีเมล"
               value={this.state.email}
               onChangeText={(email) => this.setState({ email })}
               keyboardType="email-address"
+              returnKeyType="next"
               style={{ marginBottom: 7 }}
+              onSubmitEditing={() => this.inputPasswordRef.focus()}
             />
             <TextInput
+              ref={(ref) => (this.inputPasswordRef = ref)}
               mode="outlined"
               label="รหัสผ่าน"
               value={this.state.password}
               onChangeText={(password) => this.setState({ password })}
               secureTextEntry
+              onSubmitEditing={this._pressLogin}
             />
           </View>
           <View style={styles.buttonWrapper}>
@@ -60,6 +76,7 @@ export default class LoginScreen extends Component {
               mode="contained"
               icon="login"
               onPress={this._pressLogin}
+              loading={this.state.btnLoginIsLoading}
               style={{ marginBottom: 14 }}
             >
               เข้าสู่ระบบ
