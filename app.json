@@ -31,13 +31,13 @@
     },
     "extra": {
       "firebaseConfig": {
-        "apiKey": "AIzaSyAJC-QEfYl3n3XuuL6JMHx7LF5HOMLZ-3Y",
-        "authDomain": "rakjing-29134.firebaseapp.com",
-        "databaseURL": "https://rakjing-29134-default-rtdb.asia-southeast1.firebasedatabase.app",
-        "projectId": "rakjing-29134",
-        "storageBucket": "rakjing-29134.appspot.com",
-        "messagingSenderId": "516815598429",
-        "appId": "1:516815598429:web:90af89ce40bc82708a6eb4"
+        "apiKey": "{Replace with your firebase config}",
+        "authDomain": "{Replace with your firebase config}",
+        "databaseURL": "{Replace with your firebase config}",
+        "projectId": "{Replace with your firebase config}",
+        "storageBucket": "{Replace with your firebase config}",
+        "messagingSenderId": "{Replace with your firebase config}",
+        "appId": "{Replace with your firebase config}"
       }
     }
   }
