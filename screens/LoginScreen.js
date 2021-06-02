@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { Button, Headline, TextInput, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Container from "../components/Container";
 import theme from "../global/theme";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default class LoginScreen extends Component {
   state = {
@@ -13,6 +15,17 @@ export default class LoginScreen extends Component {
 
   _pressLogin = () => {
     // Login
+    if (!this.state.email) return;
+    if (!this.state.password) return;
+
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Alert.alert(errorCode, errorMessage);
+      });
   };
 
   _pressRegister = () => {
